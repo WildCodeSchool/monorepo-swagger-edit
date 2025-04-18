@@ -1,8 +1,56 @@
 // Load the express module to create a web application
 
 import express from "express"
+import swaggerUi from "swagger-ui-express"
+import swaggerjsdoc from "swagger-jsdoc"
 
 const app = express()
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Tuto API",
+      description: "Just a lil' try",
+      contact: {
+        name: "Benjamin",
+      },
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: "http://localhost:3310",
+      },
+    ],
+    components: {
+      schemas: {
+        Item: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            title: {
+              type: "string",
+              example: "Mon super item",
+            },
+            user_id: {
+              type: "integer",
+              example: 42,
+            },
+          },
+          required: ["id", "title", "user_id"],
+        },
+      },
+    },
+  },
+  apis: ["./src/modules/**/*.ts"],
+}
+
+//Add Swagger for express api
+const swaggerDocs = swaggerjsdoc(swaggerOptions)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 // Configure it
 
